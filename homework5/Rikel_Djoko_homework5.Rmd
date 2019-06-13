@@ -91,3 +91,5 @@ write.csv(top_girl_name,'C:\\Users\\radjoko\\Downloads\\MSDS 6306\\homework5\\to
 
 ```
 
+### question 4. pload to GitHub 
+goto: https://github.com/leriky/MDS-6306-code/tree/master/homework5
