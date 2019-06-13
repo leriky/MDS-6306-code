@@ -1,0 +1,93 @@
+---
+title: "homework5"
+author: "Rikel"
+date: "June 12, 2019"
+output: html_document
+---
+
+<br>
+
+```{r, message=FALSE}
+#load the required libraries.
+library(RCurl)
+library(data.table)
+library(rvest)
+library(dplyr)
+library(tidyverse)
+library(stringr)
+library(httr)
+
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+plot.title = element_text(hjust = 0.5)
+```
+
+### Questions 1. Data Munging
+
+```{r, echo=TRUE}
+#First, import the .txt file into R so you can process it
+data <- read.table("yob2016.txt", header = FALSE, sep = ";", stringsAsFactors = FALSE)
+head(data,10)
+tail(data,10)
+#Display the summary and structure of df
+summary(data)
+str(data)
+#Write an R command to figure out which name it is and display it
+colnames(data) <- c("name", "sex", "count")
+summary(data)
+index <- grep(".yyy", data$name )
+data[index,]
+#remove this particular observation
+
+y2016 <- data[-index,]
+
+```
+
+###	Question 2.Data Merging
+```{r}
+#Assign the dataframe to y2015
+y2015 <- read.table("yob2015.txt", header = FALSE, sep = ",", stringsAsFactors = FALSE)
+#Display the last ten rows in the dataframe
+head(y2015,10)
+colnames(y2015) <- c("name", "sex", "count")
+str(y2015)
+tail(y2015, 10)
+#Merge y2016 and y2015 by your Name
+table(y2015$names)
+final <-merge(y2015, y2016, by.x = names(y2015)[1], by.y =names(y2016)[1], all = FALSE)
+head(y2015,3)
+head(y2016,3)
+head(final,3)
+str(final)
+summary(final)
+#check and remove NA
+remove_NA <- !is.na(final)
+final<- final[remove_NA,]
+head(final)
+
+
+```
+###	Question 3. Data Summary
+
+```{r}
+#Create a new column called ???Total??? in final
+final$Total <- final$count.x + final$count.y
+head(final, 10)
+
+#ort the data by Total. What are the top 10 most popular names
+my_final <- final[order(final$Total, decreasing = TRUE),]
+
+#The client is expecting a girl! Omit boys and give the top 10 most popular girl???s
+new_data <- my_final[(my_final$sex.x == "F"& my_final$sex.y =="F"),]
+head(new_data)
+
+#top 10 name
+top_girl_name <- new_data[(1:10),c(1,6)]
+head(top_girl_name, 10)
+#Write these top 10 girl names and their Totals 
+write.csv(top_girl_name,'C:\\Users\\radjoko\\Downloads\\MSDS 6306\\homework5\\topgirl_name.csv', row.names = FALSE)
+
+```
+
